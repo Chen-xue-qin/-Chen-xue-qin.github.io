@@ -1,0 +1,6 @@
+title: "我的个人博客"
+description: "基于 GitHub Pages 的简单博客"
+url: "https://Chen-xue-qin.github.io"
+baseurl: ""
+markdown: kramdown
+permalink: /:title/
