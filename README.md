@@ -1,5 +1,7 @@
 # 个人博客模板（最小）
 
+博客查看在posts下
+
 使用说明：
 1. 仓库名是 `Qin-ying.github.io`（仓库在 Chen-xue-qin 帐户下）。注意：要发布为“用户/组织主页”需要仓库名为 `Chen-xue-qin.github.io`；当前为项目站点，访问路径将是 `https://Chen-xue-qin.github.io/Qin-ying.github.io` 或者需要在 Settings→Pages 中设置自定义发布位置。
 2. 等待几分钟（通常 1-5 分钟）即可访问站点，如果没自动发布请到仓库 Settings → Pages 检查。
