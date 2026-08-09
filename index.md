@@ -1,9 +1,10 @@
 ---
 layout: default
 title: 首页
+stylesheet: /assets/css/style.css  <-- 加上这一行
 ---
 
-欢迎来到我的博客！这是基于 GitHub Pages + Jekyll 的最小博客示例。
+欢迎来到我的博客！这是基于 GitHub Pages + Jekyll 的博客。
 
 最近文章：
 <ul>
