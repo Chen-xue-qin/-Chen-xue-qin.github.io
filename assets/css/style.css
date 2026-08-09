@@ -1,0 +1,69 @@
+/* --- 全局美化开始 --- */
+
+/* 1. 页面背景与字体 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.8; /* 增加行高，阅读更舒服 */
+    color: #333;
+    background-color: #f4f6f8; /* 浅灰背景，护眼且高级 */
+    margin: 0;
+    padding: 20px;
+}
+
+/* 2. 核心容器：把内容包在中间的白盒子里 */
+.container, .wrapper { 
+    max-width: 760px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px; /* 圆角 */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* 高级感的悬浮阴影 */
+}
+
+/* 3. 标题美化 */
+h1 {
+    color: #2c3e50;
+    font-weight: 700;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+h2, h3 {
+    color: #34495e;
+    margin-top: 30px;
+}
+
+/* 4. 链接美化 */
+a {
+    color: #007bff; /* 科技蓝 */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* 5. 列表与文章条目优化 */
+ul.post-list {
+    list-style: none;
+    padding: 0;
+}
+ul.post-list li {
+    padding: 15px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+/* 6. 代码块美化 (既然你是写技术博客，这个很重要) */
+pre, code {
+    background-color: #f6f8fa;
+    border-radius: 6px;
+    font-family: Consolas, Monaco, "Andale Mono", monospace;
+}
+pre {
+    padding: 15px;
+    overflow-x: auto;
+}
+
+/* --- 全局美化结束 --- */
