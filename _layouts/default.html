@@ -4,24 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{{ page.title | escape }} - {{ site.title }}</title>
-  <link rel="stylesheet" href="/assets/style.css">
-  <nav>
-    <a href="{{ site.baseurl }}/">首页</a>
-    <a href="{{ site.baseurl }}/about/">关于我</a>
-</nav>
+  <!-- 确保这里的路径和你之前创建的css文件路径一致 -->
+  <link rel="stylesheet" href="/assets/css/style.css"> 
 </head>
+
 <body>
+  <!-- 1. 顶部导航栏：放在 body 的最上面 -->
+  <nav class="site-nav">
+    <div class="container" style="padding: 10px 40px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="nav-links">
+        <a href="{{ site.baseurl }}/">首页</a>
+        <!-- 👇 新增的“所有文章”链接 -->
+        <a href="{{ site.baseurl }}/posts/">所有文章</a> 
+        <a href="{{ site.baseurl }}/about/">关于我</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 2. 网站标题区域 -->
   <header class="site-header">
-    <h1><a href="/">{{ site.title }}</a></h1>
-    <p class="site-desc">{{ site.description }}</p>
+    <div class="container">
+        <h1><a href="/">{{ site.title }}</a></h1>
+        <p class="site-desc">{{ site.description }}</p>
+    </div>
   </header>
 
+  <!-- 3. 主要内容区域 -->
   <main class="content">
-    {{ content }}
+    <div class="container">
+        {{ content }}
+    </div>
   </main>
 
+  <!-- 4. 底部版权 -->
   <footer class="site-footer">
-    <p>© {{ site.time | date: "%Y" }} {{ site.title }}</p>
+    <div class="container">
+        <p>© {{ site.time | date: "%Y" }} {{ site.title }}</p>
+    </div>
   </footer>
 </body>
 </html>
