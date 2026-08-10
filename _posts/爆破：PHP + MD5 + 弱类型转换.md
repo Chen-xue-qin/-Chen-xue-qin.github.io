@@ -1,0 +1,122 @@
+---
+layout: default
+title: 我的第三篇文章
+date: 2026-08-10
+---
+
+# 我的第一篇文章
+
+## 爆破：PHP + MD5 + 弱类型转换（枚举解题）
+
+> 归类：爆破类题（本质是“枚举输入 token，使 md5(token) 满足约束”）。
+> 
+
+### 关键点
+
+- 这题不是“MD5 解密”，而是**构造输入**：找到某个 `token` 使得 `md5(token)` 的指定下标字符满足判断。
+- PHP 弱类型点：`intval('a')` 会得到 `0`（字符串不是数字开头就会变 0），这在构造等式时经常能用来“消掉”某些项。
+
+### 原题源码
+
+```php
+<?php
+error_reporting(0);
+
+include('flag.php');
+if(isset($_GET['token'])){
+    $token = md5($_GET['token']);
+    if(substr($token, 1,1)===substr($token, 14,1) && substr($token, 14,1) ===substr($token, 17,1)){
+        if((intval(substr($token, 1,1))+intval(substr($token, 14,1))+substr($token, 17,1))/substr($token, 1,1)===intval(substr($token, 31,1))){
+            echo $flag;
+        }
+    }
+}else{
+    highlight_file(__FILE__);
+
+}
+?>
+```
+
+### Python 枚举脚本
+
+```python
+import hashlib
+
+for i in range(10000000):
+    token = hashlib.md5(str(i).encode()).hexdigest()
+    if token[1] == token[14] == token[17]:
+        if (int(token[1], 16) + int(token[14], 16) + int(token[17], 16)) / int(token[1], 16) == int(token[31], 16):
+            print(f"Found token: {i}")
+            break
+```
+
+### PHP 枚举脚本   比较推荐的一些写法，原本的写法存在漏洞
+
+```php
+<?php
+// brute.php
+// 目的：枚举输入 token_input（即 GET 里的 token 参数的原始值）
+//      让 md5(token_input) 满足题目 if 条件。
+// 说明：此脚本把题目里的判断逻辑“原封不动”搬过来，避免 Python 模拟 PHP 弱类型规则导致不等价。
+
+error_reporting(E_ALL);
+
+function ok($token_input) {
+	$token = md5($token_input);
+
+	// 条件 1：三个位置字符严格相等
+	if (substr($token, 1, 1) === substr($token, 14, 1) &&
+		substr($token, 14, 1) === substr($token, 17, 1)) {
+
+		// 条件 2：保持与原题一致（包含 intval() + 字符串参与算术时的弱类型转换）
+		if ( (intval(substr($token, 1, 1)) + intval(substr($token, 14, 1)) + substr($token, 17, 1))
+			 / substr($token, 1, 1) === intval(substr($token, 31, 1)) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+// 你可以按需调大上限，比如 5e7 / 1e8（取决于机器性能）
+for ($i = 0; $i < 20000000; $i++) {
+	$input = (string)$i;
+	if (ok($input)) {
+		echo "[+] Found token input: {$input}\n";
+		echo "[+] md5(input): " . md5($input) . "\n";
+		// 用法：把 input 当作 ?token= 的值
+		// 例如：/?token=xxxx
+		exit;
+	}
+}
+
+echo "[-] not found in range\n";
+?>
+```
+
+#### 运行方式
+
+- 保存为 `brute.php`，本地运行：
+
+```bash
+php brute.php
+```
+
+- 输出 `Found token input` 后，把它作为题目 `?token=` 参数提交即可。
+
+#### 为什么这个 PHP 脚本更稳？
+
+- 因为原题用到了 `intval()` 和 “字符串参与算术运算” 的弱类型转换规则；Python 用 `int(x,16)` 会把 `a-f` 当作 10-15，这与 PHP 的 `intval('a') == 0` 不一致，可能导致漏解/误解。
+
+### 注意（很重要）
+
+- 你这份脚本把字符按 **16 进制数值**处理（`int(x, 16)`），而原题 PHP 用的是 `intval()` + 直接参与算术的字符串（会触发 PHP 的字符串转数字规则）。
+- 所以这段脚本**不一定**与 PHP 的判断完全等价（可能会漏解/误解）。
+- 更稳的做法：
+    - 直接用 PHP 在本地复现 `if` 判断（原封不动），然后枚举 `$_GET['token']`；或
+    - 用 Python 调用本地 PHP（子进程）来做“真判定”。
+
+### 更稳的思路（这部分是后面ai查找的新思路）
+
+1. 本地起一个 PHP 脚本 `check.php`，把题目判断逻辑封装成 `check($input)`。
+2. Python 负责枚举 input，调用 `php check.php <input>`，只要返回 true 就输出。
+3. 找到可用 input 后，把它作为 `?token=` 传回题目页面拿 flag。
