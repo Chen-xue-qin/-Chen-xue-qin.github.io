@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: "XSS1 - 套娃XSS靶场Writeup"
 date: 2026-08-16
 categories: [Writeup]
