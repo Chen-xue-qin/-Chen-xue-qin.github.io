@@ -18,16 +18,28 @@ tags: [XSS, Web安全]
 
 题目已经给出了提示，过关目标为利用 XSS 漏洞在页面执行 `alert()` 函数，后续查看源代码注意这个。
 
+<div align="center">
+    <img src="/assets/css/img/xss-background.png" width="600" alt="XSS靶场背景"/>
+</div>
+
 ### Level 1：反射型 XSS —— 无过滤的直接注入
 
 **分析：**
 
 页面通过 URL 参数 `username` 接收输入，并直接回显到页面上。没有任何过滤、转义、编码。
 
+<div align="center">
+    <img src="/assets/css/img/xss-level1.png" width="600" alt="XSS Level 1"/>
+</div>
+
 所以我们直接构造 payload：
 ?username=alert(1)
 
 回车后通关。
+
+<div align="center">
+    <img src="/assets/css/img/xss-answer1.png" width="600" alt="答案1"/><br/>
+</div>
 
 **原理：**
 
@@ -39,9 +51,17 @@ tags: [XSS, Web安全]
 
 同样有 `username` 参数，但这次输入 `<img src=x onerror=alert(1)>` 后，页面显示的是乱码。
 
+<div align="center">
+    <img src="/assets/css/img/xss-level2.png" width="600" alt="XSS Level 2"/>
+</div>
+
 **失败原因分析：**
 
 查看网页源码可以发现关键代码：
+
+<div align="center">
+    <img src="/assets/css/img/xss-yuanma2.png" width="600" alt="源码分析2"/><br/>
+</div>
 
 `escape()` 函数把 `<`、`>`、`"` 全部转成了 `%xx` 编码。浏览器看到 `%3Cscript%3E` 只会当纯文本显示，HTML 标签注入这条路被堵死了。
 
@@ -63,11 +83,19 @@ alert(1);                // ② 恶意代码，正常执行
 //';                     // ③ // 注释掉残留的引号，防止语法报错
 回车之后就可以通过这一关了。
 
+<div align="center">
+    <img src="/assets/css/img/xss-answer2.png" width="600" alt="答案2"/><br/>
+</div>
+
 ### Level 3：DOM XSS —— 去掉 escape 后
 
 **场景分析：**
 
 查看源码。
+
+<div align="center">
+    <img src="/assets/css/img/xss-yuanma3.png" width="600" alt="源码分析3"/><br/>
+</div>
 
 注意这一段：
 
@@ -87,11 +115,19 @@ document.getElementById('ccc').innerHTML = "Welcome " + username;
 
 回车后通关。
 
+<div align="center">
+    <img src="/assets/css/img/xss-answer3.png" width="600" alt="答案3"/><br/>
+</div>
+
 ### Level 4：javascript: 伪协议 —— 定向执行代码
 
 **场景分析：**
 
 查看源代码，发现页面跳转的控制代码。
+
+<div align="center">
+    <img src="/assets/css/img/xss-yuanma4.png" width="600" alt="源码分析4"/><br/>
+</div>
 
 查阅资料后我们可以发现这段代码里面的逻辑：
 
@@ -105,11 +141,25 @@ escape() 只作用于页面显示文本，而真正执行跳转的 location.href
 
 等倒计时结束就通关啦！
 
+<div align="center">
+    <img src="/assets/css/img/xss-answer4.png" width="600" alt="答案4"/><br/>
+</div>
+
 ### Level 5：表单 action 劫持 —— 伪协议的变体
 
 **场景分析：**
 
-页面是表单提交页，所以我们查看源码。
+页面是表单提交页，
+
+<div align="center">
+    <img src="/assets/css/img/xss-level5.png" width="600" alt="XSS Level 5"/>
+</div>
+
+所以我们查看源码。
+
+<div align="center">
+    <img src="/assets/css/img/xss-yuanma5.png" width="600" alt="源码分析5"/>
+</div>
 
 阅读代码后我们发现：
 
@@ -124,6 +174,10 @@ escape() 只作用于页面显示文本，而真正执行跳转的 location.href
 ?autosubmit=1&action=javascript:alert(1)
 
 回车通关！
+
+<div align="center">
+    <img src="/assets/css/img/xss-answer5.png" width="600" alt="答案5"/><br/>
+</div>
 
 ### Level 6：AngularJS 沙箱逃逸 —— 客户端模板注入（CSTI）
 **分析：**
@@ -151,3 +205,7 @@ escape() 只作用于页面显示文本，而真正执行跳转的 location.href
 {% endraw %}
 
 通关得到 flag！
+
+<div align="center">
+    <img src="/assets/css/img/xss-answer6.png" width="600" alt="答案6"/>
+</div>
