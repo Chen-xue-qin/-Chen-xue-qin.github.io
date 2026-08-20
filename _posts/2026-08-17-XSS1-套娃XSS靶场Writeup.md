@@ -146,6 +146,8 @@ escape() 只作用于页面显示文本，而真正执行跳转的 location.href
 
 最终 Payload（沙箱逃逸）：
 
-{{'a'.constructor.prototype.charAt=[].join;  $ eval('x=1} } };alert(1)//');}}
+{% raw %}
+{'a'.constructor.prototype.charAt=[].join; $ eval('x=1}
+{% endraw %}
 
 通关得到 flag！
